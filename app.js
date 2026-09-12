@@ -101,6 +101,10 @@ form.addEventListener('submit', async function(e) {
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
+            redirect: 'follow',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8'
+            },
             body: JSON.stringify(payload)
         });
         const result = await response.json();
@@ -114,7 +118,7 @@ form.addEventListener('submit', async function(e) {
         }
     } catch (error) {
         console.error('Error saving data:', error);
-        alert('Terjadi kesalahan jaringan.');
+        alert('Terjadi kesalahan jaringan saat menyimpan.');
     } finally {
         hideLoading();
     }
@@ -144,6 +148,10 @@ async function hapusData(row) {
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
+                redirect: 'follow',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
                 body: JSON.stringify({ action: 'delete', row: row })
             });
             const result = await response.json();
@@ -156,7 +164,7 @@ async function hapusData(row) {
             }
         } catch (error) {
             console.error('Error deleting data:', error);
-            alert('Terjadi kesalahan jaringan.');
+            alert('Terjadi kesalahan jaringan saat menghapus.');
         } finally {
             hideLoading();
         }
