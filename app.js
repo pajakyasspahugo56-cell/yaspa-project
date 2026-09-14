@@ -40,13 +40,16 @@ async function loadData() {
 }
 
 // Fungsi Render Tabel
+let dataTableInstance = null;
+
+// Fungsi Render Tabel dengan DataTables
 function renderTable() {
-    tabelBody.innerHTML = '';
-    
-    if (currentData.length === 0) {
-        tabelBody.innerHTML = '<tr><td colspan="12" class="text-center text-muted py-4">Tidak ada data di Spreadsheet</td></tr>';
-        return;
+    // Hancurkan instance DataTables sebelumnya jika sudah ada
+    if (dataTableInstance) {
+        dataTableInstance.destroy();
     }
+
+    tabelBody.innerHTML = '';
 
     currentData.forEach((pegawai) => {
         const rowData = JSON.stringify(pegawai).replace(/"/g, '&quot;');
@@ -54,7 +57,7 @@ function renderTable() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="text-center">${pegawai.no || ''}</td>
-            <td>${pegawai.nama || ''}</td>
+            <td class="fw-semibold">${pegawai.nama || ''}</td>
             <td>${pegawai.posisi || ''}</td>
             <td>${pegawai.status_pegawai || ''}</td>
             <td class="text-center">${pegawai.tk || ''}</td>
@@ -63,7 +66,7 @@ function renderTable() {
             <td>${pegawai.unit || ''}</td>
             <td>${pegawai.npwp || ''}</td>
             <td class="text-center">${pegawai.kode_pajak || ''}</td>
-            <td class="text-end">${formatRupiah(pegawai.gaji)}</td>
+            <td class="text-end fw-semibold text-primary">${formatRupiah(pegawai.gaji)}</td>
             <td class="text-center">
                 <button class="btn btn-sm btn-warning action-btn text-white me-1" onclick='editData(${rowData})' title="Edit">
                     <i class="fas fa-pen"></i>
@@ -74,6 +77,29 @@ function renderTable() {
             </td>
         `;
         tabelBody.appendChild(row);
+    });
+
+    // Inisialisasi Ulang DataTables dengan Fitur Ekspor & Pencarian
+    dataTableInstance = $('#dataTablePegawai').DataTable({
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Cari pegawai...",
+            lengthMenu: "Tampilkan _MENU_ data",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            paginate: {
+                previous: '<i class="fas fa-chevron-left"></i>',
+                next: '<i class="fas fa-chevron-right"></i>'
+            }
+        },
+        dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-3"Bf>rt<"d-flex flex-wrap justify-content-between align-items-center mt-3"ip>',
+        buttons: [
+            { extend: 'copy', className: 'btn btn-sm btn-outline-secondary', text: '<i class="fas fa-copy me-1"></i> Copy' },
+            { extend: 'csv', className: 'btn btn-sm btn-outline-info', text: '<i class="fas fa-file-csv me-1"></i> CSV' },
+            { extend: 'excel', className: 'btn btn-sm btn-outline-success', text: '<i class="fas fa-file-excel me-1"></i> Excel' },
+            { extend: 'pdf', className: 'btn btn-sm btn-outline-danger', text: '<i class="fas fa-file-pdf me-1"></i> PDF' }
+        ],
+        pageLength: 10,
+        responsive: true
     });
 }
 
