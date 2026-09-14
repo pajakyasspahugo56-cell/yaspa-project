@@ -243,10 +243,33 @@
         <!-- Tabel Data Pegawai -->
         <div class="col-xl-8 col-lg-7">
             <div class="card card-sb shadow-sm">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 fw-bold"><i class="fas fa-table me-2 text-primary"></i>Daftar Pegawai Active</h6>
-                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="loadData()"><i class="fas fa-sync-alt me-1"></i> Segarkan Data</button>
-                </div>
+
+
+
+
+
+
+<!-- Pada bagian Card Header Tabel Pegawai -->
+<div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+    <h6 class="m-0 fw-bold"><i class="fas fa-table me-2 text-primary"></i>Daftar Pegawai Active</h6>
+    <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-success rounded-pill px-3 fw-semibold" onclick="prosesHitungPPh21()">
+            <i class="fas fa-calculator me-1"></i> Hitung & Buat Sheet PPh 21
+        </button>
+        <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="loadData()">
+            <i class="fas fa-sync-alt me-1"></i> Segarkan Data
+        </button>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
                 <div class="card-body p-4">
                     <div class="table-responsive">
                         <table id="dataTablePegawai" class="table table-hover table-custom align-middle w-100">

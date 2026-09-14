@@ -217,5 +217,42 @@ function resetForm() {
     btnSubmit.classList.replace('btn-success', 'btn-primary');
 }
 
+
+
+// Fungsi memicu kalkulasi seluruh data pegawai & generasi Sheet PPh 21
+async function prosesHitungPPh21() {
+    if (!confirm('Sistem akan menghitung PPh 21 Bulanan (21-100-01 Pegawai Tetap) untuk seluruh pegawai dan memperbarui Sheet "PPh 21". Lanjutkan?')) {
+        return;
+    }
+
+    showLoading();
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8'
+            },
+            body: JSON.stringify({ action: 'hitung_pph21' })
+        });
+        const result = await response.json();
+
+        if (result.status === "success") {
+            alert('Berhasil! Sheet "PPh 21" telah diperbarui dengan penghitungan pajak seluruh pegawai.');
+            currentData = result.data;
+            renderTable();
+        } else {
+            alert('Gagal menghitung PPh 21: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error calculating PPh 21:', error);
+        alert('Terjadi kesalahan koneksi saat kalkulasi pajak.');
+    } finally {
+        hideLoading();
+    }
+}
+
+
+
 // Load data saat halaman pertama kali dibuka
 document.addEventListener("DOMContentLoaded", loadData);
