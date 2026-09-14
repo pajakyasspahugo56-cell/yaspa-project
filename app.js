@@ -1,8 +1,6 @@
-// ====== GANTI DENGAN URL WEB APP DEPLOYMENT ANDA ======
+// ====== GANTI DENGAN URL WEB APP DEPLOYMENT TERBARU ANDA ======
 const API_URL = 'https://script.google.com/macros/s/AKfycbzamdzE76MHfToXebRsPZ8DI7l62GFuhu2AdglJlmORP8LlIMfJijrmjVuja2Iw7N7fxQ/exec'; 
-// Contoh: 'https://script.google.com/macros/s/AKfycby.../exec'
 // =======================================================
-
 
 // Referensi DOM
 const form = document.getElementById('formPegawai');
@@ -47,22 +45,25 @@ function renderTable() {
     tabelBody.innerHTML = '';
     
     if (currentData.length === 0) {
-        tabelBody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">Tidak ada data di Spreadsheet</td></tr>';
+        tabelBody.innerHTML = '<tr><td colspan="12" class="text-center text-muted py-4">Tidak ada data di Spreadsheet</td></tr>';
         return;
     }
 
     currentData.forEach((pegawai) => {
-        // Melakukan stringify lalu sanitize agar bisa dikirim ke fungsi onclick
         const rowData = JSON.stringify(pegawai).replace(/"/g, '&quot;');
         
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="text-center">${pegawai.no || ''}</td>
             <td>${pegawai.nama || ''}</td>
+            <td>${pegawai.posisi || ''}</td>
+            <td>${pegawai.status_pegawai || ''}</td>
             <td class="text-center">${pegawai.tk || ''}</td>
             <td class="text-center">${pegawai.gol || ''}</td>
-            <td class="text-center">${pegawai.id || ''}</td>
+            <td class="text-center">${pegawai.id_tku || ''}</td>
+            <td>${pegawai.unit || ''}</td>
             <td>${pegawai.npwp || ''}</td>
+            <td class="text-center">${pegawai.kode_pajak || ''}</td>
             <td class="text-end">${formatRupiah(pegawai.gaji)}</td>
             <td class="text-center">
                 <button class="btn btn-sm btn-warning action-btn text-white me-1" onclick='editData(${rowData})' title="Edit">
@@ -86,10 +87,14 @@ form.addEventListener('submit', async function(e) {
         row: document.getElementById('rowId').value,
         no: document.getElementById('noUrut').value,
         nama: document.getElementById('nama').value,
+        posisi: document.getElementById('posisi').value,
+        status_pegawai: document.getElementById('status_pegawai').value,
         tk: document.getElementById('tk').value,
         gol: document.getElementById('gol').value,
-        id: document.getElementById('idPegawai').value,
+        id_tku: document.getElementById('id_tku').value,
+        unit: document.getElementById('unit').value,
         npwp: document.getElementById('npwp').value,
+        kode_pajak: document.getElementById('kode_pajak').value,
         gaji: document.getElementById('gaji').value
     };
 
@@ -129,11 +134,15 @@ function editData(pegawai) {
     document.getElementById('rowId').value = pegawai.row;
     document.getElementById('noUrut').value = pegawai.no;
     document.getElementById('nama').value = pegawai.nama;
-    document.getElementById('tk').value = pegawai.tk;
-    document.getElementById('gol').value = pegawai.gol;
-    document.getElementById('idPegawai').value = pegawai.id;
-    document.getElementById('npwp').value = pegawai.npwp;
-    document.getElementById('gaji').value = pegawai.gaji;
+    document.getElementById('posisi').value = pegawai.posisi || '';
+    document.getElementById('status_pegawai').value = pegawai.status_pegawai || '';
+    document.getElementById('tk').value = pegawai.tk || '';
+    document.getElementById('gol').value = pegawai.gol || '';
+    document.getElementById('id_tku').value = pegawai.id_tku || '';
+    document.getElementById('unit').value = pegawai.unit || '';
+    document.getElementById('npwp').value = pegawai.npwp || '';
+    document.getElementById('kode_pajak').value = pegawai.kode_pajak || '';
+    document.getElementById('gaji').value = pegawai.gaji || '';
     
     document.getElementById('formTitle').innerText = 'Perbarui Data Pegawai';
     const btnSubmit = document.getElementById('btnSubmit');
