@@ -1,7 +1,6 @@
 // ====== GANTI DENGAN URL WEB APP DEPLOYMENT TERBARU ANDA ======
 const API_URL = 'https://script.google.com/macros/s/AKfycbzamdzE76MHfToXebRsPZ8DI7l62GFuhu2AdglJlmORP8LlIMfJijrmjVuja2Iw7N7fxQ/exec'; 
 // =======================================================
-
 // Referensi DOM
 const form = document.getElementById('formPegawai');
 const tabelBody = document.getElementById('tabelPegawai');
