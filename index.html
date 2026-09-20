@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Manajemen Data Pegawai - YASPA</title>
+    <title>Sistem HR & Pajak - YASPA</title>
     
     <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,288 +23,188 @@
             --sb-primary: #4318ff;
             --sb-primary-hover: #3311db;
             --sb-text-main: #2b3674;
-            --sb-text-muted: #a3edd9;
             --sb-border: #e9ecef;
             --sb-radius: 1.5rem;
+            --sidebar-width: 280px;
         }
+        body { background-color: var(--sb-bg); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--sb-text-main); overflow-x: hidden; }
+        
+        /* Layout */
+        #wrapper { display: flex; width: 100%; min-height: 100vh; }
+        #sidebar { width: var(--sidebar-width); background: #ffffff; border-right: 1px solid var(--sb-border); transition: all 0.3s; z-index: 1000; display: flex; flex-direction: column; position: fixed; height: 100vh; overflow-y: auto;}
+        #page-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 20px; transition: all 0.3s; }
+        
+        /* Sidebar Menu Styling */
+        .sidebar-brand { padding: 1.5rem; font-weight: 800; font-size: 1.5rem; color: var(--sb-primary); border-bottom: 1px solid var(--sb-border); }
+        .nav-item .nav-link { color: #64748b; font-weight: 600; padding: 12px 20px; border-radius: 0.75rem; margin: 4px 15px; transition: 0.3s; display: flex; align-items: center; cursor: pointer; }
+        .nav-item .nav-link:hover, .nav-item .nav-link.active { background-color: var(--sb-primary); color: white; }
+        .nav-item .nav-link i { width: 25px; text-align: center; margin-right: 10px; font-size: 1.1rem; }
+        
+        /* Submenu Styling */
+        .submenu { background-color: #f8fafc; border-radius: 0.75rem; margin: 0 15px; overflow: hidden; }
+        .submenu .nav-link { font-size: 0.85rem; padding: 10px 15px 10px 45px; margin: 2px 0; color: #475569; }
+        .submenu .nav-link:hover, .submenu .nav-link.active { background-color: #e2e8f0; color: var(--sb-primary); }
 
-        body {
-            background-color: var(--sb-bg);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: var(--sb-text-main);
-        }
-
-        /* Modern Card Styling SB Admin Pro */
-        .card-sb {
-            border: none;
-            border-radius: var(--sb-radius) !important;
-            box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
-            background: var(--sb-card-bg);
-            transition: all 0.3s ease;
-        }
-
-        .card-sb .card-header {
-            background: transparent;
-            border-bottom: 1px solid var(--sb-border);
-            padding: 1.25rem 1.5rem;
-            font-weight: 700;
-            color: var(--sb-text-main);
-            border-top-left-radius: var(--sb-radius) !important;
-            border-top-right-radius: var(--sb-radius) !important;
-        }
-
-        /* Form Inputs */
-        .form-control, .form-select {
-            border-radius: 0.75rem;
-            border: 1px solid #e2e8f0;
-            padding: 0.55rem 0.9rem;
-            font-size: 0.875rem;
-            color: var(--sb-text-main);
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--sb-primary);
-            box-shadow: 0 0 0 0.25rem rgba(67, 24, 255, 0.15);
-        }
-
-        /* Buttons */
-        .btn-primary-sb {
-            background-color: var(--sb-primary);
-            border-color: var(--sb-primary);
-            color: #fff;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            padding: 0.55rem 1.25rem;
-        }
-
-        .btn-primary-sb:hover {
-            background-color: var(--sb-primary-hover);
-            border-color: var(--sb-primary-hover);
-            color: #fff;
-        }
-
-        .btn-secondary-sb {
-            border-radius: 0.75rem;
-            font-weight: 600;
-            padding: 0.55rem 1.25rem;
-        }
-
-        .action-btn {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-            border-radius: 0.5rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* DataTables Custom Styling */
-        .table-custom {
-            font-size: 0.85rem;
-        }
-
-        .table-custom thead th {
-            background-color: #f8fafc;
-            color: #475569;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid var(--sb-border);
-            white-space: nowrap;
-        }
-
-        .dt-buttons .btn {
-            border-radius: 0.6rem !important;
-            margin-right: 0.3rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 0.4rem 0.8rem;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button.active .page-link {
-            background-color: var(--sb-primary) !important;
-            border-color: var(--sb-primary) !important;
-            border-radius: 0.5rem;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button .page-link {
-            border-radius: 0.5rem;
-            margin: 0 2px;
-            color: var(--sb-text-main);
-        }
-
-        /* Loading Overlay */
-        #loadingOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(5px);
-            z-index: 2000; display: none;
-            justify-content: center; align-items: center; flex-direction: column;
-        }
+        /* Card & UI Elements */
+        .card-sb { border: none; border-radius: var(--sb-radius); box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12); }
+        .card-sb .card-header { background: transparent; border-bottom: 1px solid var(--sb-border); padding: 1.25rem 1.5rem; font-weight: 700; border-radius: var(--sb-radius) var(--sb-radius) 0 0; }
+        .form-control, .form-select { border-radius: 0.75rem; padding: 0.55rem 0.9rem; font-size: 0.875rem; }
+        .form-control:focus { border-color: var(--sb-primary); box-shadow: 0 0 0 0.2rem rgba(67, 24, 255, 0.15); }
+        .btn-primary-sb { background-color: var(--sb-primary); color: white; border-radius: 0.75rem; padding: 0.55rem 1.25rem; font-weight: 600; }
+        
+        /* DataTables Custom */
+        .table-custom thead th { background-color: #f8fafc; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; }
+        .dt-buttons .btn { border-radius: 0.6rem !important; font-size: 0.8rem; font-weight: 600; padding: 0.4rem 0.8rem; margin-right: 0.3rem;}
+        
+        #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; justify-content: center; align-items: center; flex-direction: column; }
     </style>
 </head>
 <body>
 
 <!-- Loading Overlay -->
 <div id="loadingOverlay">
-    <div class="spinner-border text-primary" role="status" style="width: 3.5rem; height: 3.5rem; border-width: 0.25em;"></div>
-    <h6 class="mt-3 font-weight-bold text-primary">Memproses Data Sheets...</h6>
+    <div class="spinner-border text-primary" role="status" style="width: 3.5rem; height: 3.5rem;"></div>
+    <h6 class="mt-3 font-weight-bold text-primary">Sinkronisasi Server...</h6>
 </div>
 
-<!-- Header / Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom py-3 mb-4">
-    <div class="container-fluid px-4">
-        <a class="navbar-brand fw-bold text-primary fs-4" href="#">
-            <i class="fas fa-users-gear me-2"></i>YASPA-PAJAK
-        </a>
-        <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold">
-            <i class="fas fa-database me-1"></i> Live Google Sheets API
-        </span>
-    </div>
-</nav>
-
-<div class="container-fluid px-4 pb-5">
-    <div class="row">
-        <!-- Form Input -->
-        <div class="col-xl-4 col-lg-5 mb-4">
-            <div class="card card-sb shadow-sm">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <h6 class="m-0 fw-bold" id="formTitle"><i class="fas fa-user-plus me-2 text-primary"></i>Tambah Pegawai Baru</h6>
+<div id="wrapper">
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-layer-group me-2"></i>YASPA
+        </div>
+        <ul class="nav flex-column mt-3">
+            <li class="nav-item">
+                <a class="nav-link active" id="menu-pegawai" onclick="switchView('viewDataPegawai', this)">
+                    <i class="fas fa-users"></i> Data Pegawai
+                </a>
+            </li>
+            
+            <li class="nav-item mt-2">
+                <a class="nav-link" data-bs-toggle="collapse" href="#collapsePajak" role="button" aria-expanded="false" aria-controls="collapsePajak">
+                    <i class="fas fa-file-invoice-dollar"></i> Pajak PPh 21
+                    <i class="fas fa-chevron-down ms-auto" style="font-size: 0.8rem;"></i>
+                </a>
+                <div class="collapse submenu" id="collapsePajak">
+                    <div class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#collapseBulanan" role="button">
+                            Jenis Potongan Bulanan <i class="fas fa-chevron-down ms-auto" style="font-size: 0.7rem;"></i>
+                        </a>
+                        <div class="collapse submenu" id="collapseBulanan">
+                            <a class="nav-link" id="menu-pph21" onclick="switchView('viewPPh21', this)">
+                                <i class="fas fa-circle" style="font-size: 0.4rem; margin-right: 8px;"></i> Pegawai Tetap
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body p-4" style="max-height: 75vh; overflow-y: auto;">
-                    <form id="formPegawai">
-                        <input type="hidden" id="rowId">
-                        <input type="hidden" id="noUrut">
-                        
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold text-secondary small">Nama Lengkap</label>
-                            <input type="text" class="form-control" id="nama" required placeholder="Masukkan nama lengkap">
-                        </div>
+            </li>
+        </ul>
+    </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold text-secondary small">Posisi</label>
-                                <input type="text" class="form-control" id="posisi" placeholder="Jabatan/Posisi">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold text-secondary small">Status Pegawai</label>
-                                <input type="text" class="form-control" id="status_pegawai" placeholder="Tetap/Kontrak">
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold text-secondary small">Status (TK/K)</label>
-                                <input type="text" class="form-control" id="tk" placeholder="TK/0, K/1, dll">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold text-secondary small">Gol / Ruang</label>
-                                <input type="text" class="form-control" id="gol" placeholder="Contoh: III/a">
-                            </div>
-                        </div>
+    <!-- MAIN PAGE CONTENT -->
+    <div id="page-content">
+        <!-- Top Navbar -->
+        <nav class="navbar navbar-expand-lg bg-white card-sb mb-4 p-3 d-flex justify-content-between align-items-center">
+            <h5 class="m-0 fw-bold text-primary" id="pageTitle">Modul Data Pegawai</h5>
+            <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill"><i class="fas fa-check-circle me-1"></i> API Connected</span>
+        </nav>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold text-secondary small">ID TKU</label>
-                            <input type="text" class="form-control" id="id_tku" placeholder="Nomor ID TKU">
+        <!-- VIEW 1: DATA PEGAWAI -->
+        <div id="viewDataPegawai">
+            <div class="row">
+                <!-- Form -->
+                <div class="col-xl-4 col-lg-5 mb-4">
+                    <div class="card card-sb">
+                        <div class="card-header"><i class="fas fa-user-plus me-2 text-primary"></i>Form Pegawai</div>
+                        <div class="card-body p-4" style="max-height: 70vh; overflow-y: auto;">
+                            <form id="formPegawai">
+                                <!-- Sama seperti kode form sebelumnya, dipertahankan -->
+                                <input type="hidden" id="rowId"><input type="hidden" id="noUrut">
+                                <div class="mb-3"><label class="form-label small">Nama Lengkap</label><input type="text" class="form-control" id="nama" required></div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3"><label class="form-label small">Posisi</label><input type="text" class="form-control" id="posisi"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label small">Status</label><input type="text" class="form-control" id="status_pegawai"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3"><label class="form-label small">TK/K</label><input type="text" class="form-control" id="tk"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label small">Golongan</label><input type="text" class="form-control" id="gol"></div>
+                                </div>
+                                <div class="mb-3"><label class="form-label small">ID TKU</label><input type="text" class="form-control" id="id_tku"></div>
+                                <div class="mb-3"><label class="form-label small">Unit</label><input type="text" class="form-control" id="unit"></div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3"><label class="form-label small">NPWP</label><input type="text" class="form-control" id="npwp"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label small">Kode Pajak</label><input type="text" class="form-control" id="kode_pajak"></div>
+                                </div>
+                                <div class="mb-4"><label class="form-label small">Gaji Bruto (Rp)</label><input type="number" class="form-control" id="gaji"></div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary-sb" id="btnSubmit">Simpan Data</button>
+                                    <button type="button" class="btn btn-light" onclick="resetForm()">Batal</button>
+                                </div>
+                            </form>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold text-secondary small">Unit Kerja</label>
-                            <input type="text" class="form-control" id="unit" placeholder="Nama Unit/Yayasan">
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold text-secondary small">NPWP</label>
-                                <input type="text" class="form-control" id="npwp" placeholder="Nomor NPWP">
+                <!-- Tabel Pegawai -->
+                <div class="col-xl-8 col-lg-7">
+                    <div class="card card-sb">
+                        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <span><i class="fas fa-table me-2 text-primary"></i>Database Pegawai</span>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-success rounded-pill px-3" onclick="prosesHitungPPh21()"><i class="fas fa-calculator me-1"></i> Hitung PPh 21 ke Sheet</button>
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="loadData()"><i class="fas fa-sync-alt me-1"></i> Refresh</button>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold text-secondary small">Kode Pajak</label>
-                                <input type="text" class="form-control" id="kode_pajak" placeholder="Kode Pajak">
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table id="dataTablePegawai" class="table table-hover table-custom align-middle w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th><th>Nama</th><th>Posisi</th><th>Status</th><th>TK/K</th><th>Gol</th><th>ID TKU</th><th>Unit</th><th>NPWP</th><th>Kode Pajak</th><th>Gaji Bruto</th><th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelPegawai"></tbody>
+                                </table>
                             </div>
                         </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold text-secondary small">Gaji Bruto (Rp)</label>
-                            <input type="number" class="form-control" id="gaji" placeholder="0">
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary-sb" id="btnSubmit"><i class="fas fa-save me-1"></i> Simpan ke Sheets</button>
-                            <button type="button" class="btn btn-light btn-secondary-sb" onclick="resetForm()"><i class="fas fa-undo me-1"></i> Batal</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tabel Data Pegawai -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card card-sb shadow-sm">
-
-
-
-
-
-
-<!-- Pada bagian Card Header Tabel Pegawai -->
-<div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
-    <h6 class="m-0 fw-bold"><i class="fas fa-table me-2 text-primary"></i>Daftar Pegawai Active</h6>
-    <div class="d-flex gap-2">
-        <button class="btn btn-sm btn-success rounded-pill px-3 fw-semibold" onclick="prosesHitungPPh21()">
-            <i class="fas fa-calculator me-1"></i> Hitung & Buat Sheet PPh 21
-        </button>
-        <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="loadData()">
-            <i class="fas fa-sync-alt me-1"></i> Segarkan Data
-        </button>
-    </div>
-</div>
-
-
-
-
-
-
-
-
-
+        <!-- VIEW 2: PPH 21 PEGAWAI TETAP -->
+        <div id="viewPPh21" style="display: none;">
+            <div class="card card-sb">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-file-invoice-dollar me-2 text-primary"></i>Data Potongan PPh 21 (21-100-01 Pegawai Tetap)</span>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="loadDataPPh21()"><i class="fas fa-sync-alt me-1"></i> Tarik Data Terbaru</button>
+                </div>
                 <div class="card-body p-4">
+                    <div class="alert alert-info border-0 rounded-4 mb-4">
+                        <i class="fas fa-info-circle me-2"></i> Data di bawah ini ditarik otomatis dari Sheet <b>PPH 21</b>. Untuk memperbarui perhitungan, gunakan tombol "Hitung PPh 21" di menu Data Pegawai.
+                    </div>
                     <div class="table-responsive">
-                        <table id="dataTablePegawai" class="table table-hover table-custom align-middle w-100">
+                        <table id="dataTablePPh21" class="table table-hover table-custom align-middle w-100">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama</th>
-                                    <th>Posisi</th>
-                                    <th>Status</th>
-                                    <th>TK/K</th>
-                                    <th>Gol/Ruang</th>
-                                    <th>ID TKU</th>
-                                    <th>Unit</th>
-                                    <th>NPWP</th>
-                                    <th>Kode Pajak</th>
-                                    <th>Gaji Bruto</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th width="5%" class="text-center">No</th>
+                                    <th width="45%">Nama Lengkap</th>
+                                    <th width="25%" class="text-end">Gaji Bruto</th>
+                                    <th width="25%" class="text-end">PPh 21 Bulanan</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabelPegawai">
-                                <!-- Data dimasukkan oleh JavaScript -->
-                            </tbody>
+                            <tbody id="tabelPPh21"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
-<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- DataTables & Export Extensions JS -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
@@ -314,7 +214,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-
 <script src="app.js"></script>
 </body>
 </html>
