@@ -4,10 +4,15 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbzamdzE76MHfToXebRsPZ8D
 const form = document.getElementById('formPegawai');
 const loadingOverlay = document.getElementById('loadingOverlay');
 
+// Variabel State Data
 let currentDataPegawai = [];
 let currentDataPPh21 = [];
+let currentDataPesangon = []; // Tambahan untuk Pesangon
+
+// Variabel Instance DataTables
 let dtPegawaiInstance = null;
 let dtPPh21Instance = null;
+let dtPesangonInstance = null; // Tambahan untuk Pesangon
 
 const formatRupiah = (angka) => {
     if (!angka || isNaN(angka)) return 'Rp 0';
@@ -23,6 +28,10 @@ function switchView(viewId, element) {
     document.getElementById('viewDataPegawai').style.display = 'none';
     document.getElementById('viewPPh21').style.display = 'none';
     
+    // Sembunyikan view pesangon jika elemennya ada di HTML
+    const viewPesangonEl = document.getElementById('viewPesangon');
+    if (viewPesangonEl) viewPesangonEl.style.display = 'none';
+    
     // Tampilkan view terpilih
     document.getElementById(viewId).style.display = 'block';
     
@@ -37,6 +46,9 @@ function switchView(viewId, element) {
     } else if (viewId === 'viewPPh21') {
         document.getElementById('pageTitle').innerText = 'Kalkulasi PPh 21 Pegawai Tetap';
         loadDataPPh21();
+    } else if (viewId === 'viewPesangon') { // Logika baru untuk menu Pesangon
+        document.getElementById('pageTitle').innerText = 'Kalkulasi PPh 21 Final - Uang Pesangon';
+        loadDataPesangon();
     }
 }
 
@@ -85,7 +97,7 @@ function renderTablePegawai() {
     dtPegawaiInstance = $('#dataTablePegawai').DataTable(getDtConfig());
 }
 
-// --- FUNGSI MODUL: PPH 21 ---
+// --- FUNGSI MODUL: PPH 21 PEGAWAI TETAP ---
 async function loadDataPPh21() {
     showLoading();
     try {
@@ -120,6 +132,62 @@ function renderTablePPh21() {
     dtPPh21Instance = $('#dataTablePPh21').DataTable(getDtConfig());
 }
 
+// --- FUNGSI MODUL BARU: PPH 21 FINAL (PESANGON) ---
+async function loadDataPesangon() {
+    showLoading();
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST', body: JSON.stringify({ action: 'get_pesangon' })
+        });
+        const result = await response.json();
+        if (result.status === "success") {
+            currentDataPesangon = result.data;
+            renderTablePesangon();
+        }
+    } catch (error) { console.error('Error:', error); } 
+    finally { hideLoading(); }
+}
+
+function renderTablePesangon() {
+    if (dtPesangonInstance) dtPesangonInstance.destroy();
+    const tbody = document.getElementById('tabelPesangon');
+    if (!tbody) return; // Mencegah error jika HTML belum siap
+    
+    tbody.innerHTML = '';
+
+    currentDataPesangon.forEach((data) => {
+        tbody.innerHTML += `
+            <tr>
+                <td class="text-center">${data.no || ''}</td>
+                <td class="fw-semibold text-dark">${data.nama || ''}</td>
+                <td>${data.npwp || '-'}</td>
+                <td class="text-end">${formatRupiah(data.gaji_bruto)}</td>
+                <td class="text-end fw-bold text-success">${formatRupiah(data.pph21_final)}</td>
+            </tr>
+        `;
+    });
+
+    dtPesangonInstance = $('#dataTablePesangon').DataTable(getDtConfig());
+}
+
+async function prosesHitungPesangon() {
+    if (!confirm('Sistem akan memfilter pegawai dengan kode pajak "21-401-01" dan menghitung PPh 21 Final. Lanjutkan?')) return;
+    showLoading();
+    try {
+        const response = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: 'hitung_pesangon' }) 
+        });
+        const result = await response.json();
+        if (result.status === "success") { 
+            alert('Kalkulasi PPh 21 Final Pesangon Berhasil!'); 
+            currentDataPesangon = result.data;
+            renderTablePesangon(); 
+        }
+    } catch (error) { console.error('Error:', error); } 
+    finally { hideLoading(); }
+}
+
 // --- KONFIGURASI UMUM DATATABLES ---
 function getDtConfig() {
     return {
@@ -136,7 +204,7 @@ function getDtConfig() {
     };
 }
 
-// --- FUNGSI CRUD & KALKULASI PPH 21 (Dipertahankan dari versi sebelumnya) ---
+// --- FUNGSI CRUD & KALKULASI PPH 21 UMUM ---
 form.addEventListener('submit', async function(e) {
     e.preventDefault(); showLoading();
     const record = {

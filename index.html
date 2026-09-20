@@ -96,8 +96,25 @@
                             </a>
                         </div>
                     </div>
+
+                    <div class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#collapseFinal" role="button">
+                            Jenis Pemotongan PPh 21 Final <i class="fas fa-chevron-down ms-auto" style="font-size: 0.7rem;"></i>
+                        </a>
+                        <div class="collapse submenu" id="collapseFinal">
+                            <a class="nav-link" id="menu-pesangon" onclick="switchView('viewPesangon', this)">
+                                <i class="fas fa-circle" style="font-size: 0.4rem; margin-right: 8px;"></i> Uang Pesangon
+                            </a>
+                        </div>
+                    </div>
+
                 </div>
             </li>
+
+
+
+
+            
         </ul>
     </div>
 
@@ -199,6 +216,44 @@
                 </div>
             </div>
         </div>
+
+
+        <!-- VIEW 3: PPH 21 FINAL PESANGON -->
+        <div id="viewPesangon" style="display: none;">
+            <div class="card card-sb border-0" style="border-top: 5px solid #00b894 !important;">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <span><i class="fas fa-hand-holding-usd me-2 text-success"></i>Data Potongan PPh 21 Final (21-401-01 Uang Pesangon)</span>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-success rounded-pill px-3" onclick="prosesHitungPesangon()">
+                            <i class="fas fa-calculator me-1"></i> Hitung Otomatis (21-401-01)
+                        </button>
+                        <button class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="loadDataPesangon()">
+                            <i class="fas fa-sync-alt me-1"></i> Tarik Data
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-success bg-success-subtle border-0 rounded-4 mb-4">
+                        <i class="fas fa-magic me-2"></i> Sistem akan memfilter Data Pegawai yang memiliki <b>Kode Pajak: 21-401-01</b> dan otomatis menghitung pajak berdasarkan tarif progresif Uang Pesangon sekaligus.
+                    </div>
+                    <div class="table-responsive">
+                        <table id="dataTablePesangon" class="table table-hover table-custom align-middle w-100">
+                            <thead>
+                                <tr>
+                                    <th width="5%" class="text-center">No</th>
+                                    <th width="35%">Nama Lengkap</th>
+                                    <th width="20%">NPWP</th>
+                                    <th width="20%" class="text-end">Penghasilan Bruto</th>
+                                    <th width="20%" class="text-end">PPh 21 Final</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelPesangon"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 </div>
