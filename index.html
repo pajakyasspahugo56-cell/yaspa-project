@@ -255,6 +255,83 @@
         </div>
 
 
+<!-- 1. Tombol Sakti untuk memicu perhitungan semua status -->
+<div class="mb-3">
+  <button class="btn btn-primary" onclick="prosesHitungPajakStatus()">
+    <i class="fas fa-calculator"></i> Hitung & Pisahkan Pajak Berdasarkan Status
+  </button>
+</div>
+
+<!-- 2. Wadah untuk Tabel PPh 21 Pesangon (Pegawai Tetap) -->
+<div id="viewPesangonTetap" style="display: none;">
+  <h3>Data PPh 21 Pesangon (21-401-01)</h3>
+  <div class="table-responsive">
+    <table id="tabelPesangonTetap" class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama Lengkap</th>
+          <th>NPWP</th>
+          <th>Gaji Bruto</th>
+          <th>Kode Pajak</th>
+          <th>PPh 21 Final</th>
+        </tr>
+      </thead>
+      <tbody id="dataTablePesangonTetap">
+        <!-- Data akan disuntikkan ke sini oleh Javascript -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. Wadah untuk Tabel PPh 21 PNS -->
+<div id="viewPNS" style="display: none;">
+  <h3>Data PPh 21 PNS</h3>
+  <div class="table-responsive">
+    <table id="tabelPNS" class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama Lengkap</th>
+          <th>NPWP</th>
+          <th>Golongan</th>
+          <th>Gaji Bruto</th>
+          <th>Kategori</th>
+          <th>PPh 21 PNS</th>
+        </tr>
+      </thead>
+      <tbody id="dataTablePNS">
+        <!-- Data akan disuntikkan ke sini oleh Javascript -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 4. Wadah untuk Tabel PPh 21 Kontrak / Bukan Pegawai -->
+<div id="viewKontrak" style="display: none;">
+  <h3>Data PPh 21 Non-Tetap (21-100-18)</h3>
+  <div class="table-responsive">
+    <table id="tabelKontrak" class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama Lengkap</th>
+          <th>NPWP</th>
+          <th>Status</th>
+          <th>Gaji Bruto</th>
+          <th>Kode Pajak</th>
+          <th>PPh 21 (21-100-18)</th>
+        </tr>
+      </thead>
+      <tbody id="dataTableKontrak">
+        <!-- Data akan disuntikkan ke sini oleh Javascript -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
     </div>
 </div>
 
