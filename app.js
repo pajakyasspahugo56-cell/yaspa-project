@@ -329,3 +329,23 @@ function loadDataKontrak() { loadDataKategori('get_kontrak', renderTableKontrak)
 function loadDataTidakTetap() { loadDataKategori('get_tidak_tetap', renderTableTidakTetap); } // Trigger Baru
 
 document.addEventListener("DOMContentLoaded", loadData);
+
+async function prosesHitungTidakTetap() {
+    if (!confirm('Sistem akan memfilter Pegawai Tidak Tetap dan menghitung PPh 21 (21-100-03) ke Sheet. Lanjutkan?')) return;
+    showLoading();
+    try {
+        const response = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: 'hitung_pph21_tidak_tetap' }) 
+        });
+        const result = await response.json();
+        if (result.status === "success") { 
+            alert('Perhitungan Berhasil! Data telah disimpan ke Sheet PPh 21 Tidak Tetap.'); 
+            currentDataTidakTetap = result.data; // Simpan data terbaru ke memori
+            renderTableTidakTetap(); // Refresh tampilan tabel
+        }
+    } catch (error) { 
+        alert('Terjadi Kesalahan saat perhitungan API!'); 
+        console.error('Error:', error);
+    } finally { hideLoading(); }
+}
