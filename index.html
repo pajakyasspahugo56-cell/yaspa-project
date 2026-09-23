@@ -172,7 +172,6 @@
                         <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <span><i class="fas fa-table me-2 text-primary"></i>Database Pegawai</span>
                             <div class="d-flex gap-2">
-                                <!-- Tombol Sakti Dipindahkan ke sini agar UI rapi -->
                                 <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="prosesHitungPajakStatus()">
                                     <i class="fas fa-calculator"></i> Hitung Semua Status
                                 </button>
@@ -189,7 +188,8 @@
                                 <table id="dataTablePegawai" class="table table-hover table-custom align-middle w-100">
                                     <thead>
                                         <tr>
-                                            <th>No</th><th>Nama</th><th>Posisi</th><th>Status</th><th>TK/K</th><th>Gol</th><th>ID TKU</th><th>Unit</th><th>NPWP</th><th>Kode Pajak</th><th>Gaji Bruto</th><th>Aksi</th>
+                                            <!-- DIPERBAIKI: Menghapus <th>Kode Pajak</th> agar total jadi 11 (sesuai data app.js) -->
+                                            <th>No</th><th>Nama</th><th>Posisi</th><th>Status</th><th>TK/K</th><th>Gol</th><th>ID TKU</th><th>Unit</th><th>NPWP</th><th>Gaji Bruto</th><th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabelPegawai"></tbody>
@@ -274,18 +274,19 @@
                 </div>
                 <div class="card-body p-4">
                     <div class="table-responsive">
-                        <table id="tabelPesangonTetap" class="table table-hover table-custom align-middle w-100">
+                        <table id="dataTablePesangonTetap" class="table table-hover table-custom align-middle w-100">
                             <thead>
                                 <tr>
+                                    <!-- DIPERBAIKI: Kolom Gaji dan Kode Pajak ditukar agar sejajar dengan JS -->
                                     <th>No</th>
                                     <th>Nama Lengkap</th>
                                     <th>NPWP</th>
-                                    <th>Gaji Bruto</th>
                                     <th>Kode Pajak</th>
+                                    <th>Gaji Bruto</th>
                                     <th>PPh 21 Final</th>
                                 </tr>
                             </thead>
-                            <tbody id="dataTablePesangonTetap">
+                            <tbody id="tabelPesangonTetap">
                                 <!-- Data disuntikkan ke sini -->
                             </tbody>
                         </table>
@@ -303,19 +304,19 @@
                 </div>
                 <div class="card-body p-4">
                     <div class="table-responsive">
-                        <table id="tabelPNS" class="table table-hover table-custom align-middle w-100">
+                        <table id="dataTablePNS" class="table table-hover table-custom align-middle w-100">
                             <thead>
                                 <tr>
+                                    <!-- DIPERBAIKI: Menghapus <th>Kategori</th> agar total jadi 6 kolom (Sesuai JS) -->
                                     <th>No</th>
                                     <th>Nama Lengkap</th>
                                     <th>NPWP</th>
                                     <th>Golongan</th>
                                     <th>Gaji Bruto</th>
-                                    <th>Kategori</th>
                                     <th>PPh 21 PNS</th>
                                 </tr>
                             </thead>
-                            <tbody id="dataTablePNS">
+                            <tbody id="tabelPNS">
                                 <!-- Data disuntikkan ke sini -->
                             </tbody>
                         </table>
@@ -333,19 +334,19 @@
                 </div>
                 <div class="card-body p-4">
                     <div class="table-responsive">
-                        <table id="tabelKontrak" class="table table-hover table-custom align-middle w-100">
+                        <table id="dataTableKontrak" class="table table-hover table-custom align-middle w-100">
                             <thead>
                                 <tr>
+                                    <!-- DIPERBAIKI: Menghapus <th>Kode Pajak</th> karena di JS Kode Pajak & Status digabung dalam 1 kolom -->
                                     <th>No</th>
                                     <th>Nama Lengkap</th>
                                     <th>NPWP</th>
-                                    <th>Status</th>
+                                    <th>Status & Kode</th>
                                     <th>Gaji Bruto</th>
-                                    <th>Kode Pajak</th>
                                     <th>PPh 21 (21-100-18)</th>
                                 </tr>
                             </thead>
-                            <tbody id="dataTableKontrak">
+                            <tbody id="tabelKontrak">
                                 <!-- Data disuntikkan ke sini -->
                             </tbody>
                         </table>
