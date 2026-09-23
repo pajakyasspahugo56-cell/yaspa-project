@@ -99,7 +99,7 @@
                         </div>
                     </div>
 
-                    <!-- Menu 2: Potongan Tidak Final (Baru) -->
+                    <!-- Menu 2: Potongan Tidak Final -->
                     <div class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#collapseTidakFinal" role="button">
                             Pemotongan Tidak Final <i class="fas fa-chevron-down ms-auto" style="font-size: 0.7rem;"></i>
@@ -182,17 +182,24 @@
                     <div class="card card-sb">
                         <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <span><i class="fas fa-table me-2 text-primary"></i>Database Pegawai</span>
-                            <div class="d-flex gap-2">
+                            
+                            <!-- DERETAN TOMBOL HITUNG -->
+                            <div class="d-flex gap-2 flex-wrap">
                                 <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="prosesHitungPajakStatus()">
                                     <i class="fas fa-calculator"></i> Hitung Semua Status
                                 </button>
                                 <button class="btn btn-sm btn-success rounded-pill px-3" onclick="prosesHitungPPh21()">
                                     <i class="fas fa-calculator me-1"></i> Hitung TER
                                 </button>
+                                <!-- TOMBOL BARU UNTUK TIDAK TETAP (21-100-03) -->
+                                <button class="btn btn-sm btn-warning rounded-pill px-3" onclick="prosesHitungTidakTetap()">
+                                    <i class="fas fa-calculator me-1"></i> Hitung PPh (21-100-03)
+                                </button>
                                 <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="loadData()">
                                     <i class="fas fa-sync-alt me-1"></i> Refresh
                                 </button>
                             </div>
+                            
                         </div>
                         <div class="card-body p-4">
                             <div class="table-responsive">
@@ -236,47 +243,47 @@
             </div>
         </div>
 
-<!-- VIEW BARU: PPH 21 PEGAWAI TIDAK TETAP (21-100-03) -->
-<div id="viewTidakTetap" style="display: none;">
-    <div class="card card-sb border-0" style="border-top: 5px solid #fdcb6e !important;">
-        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <span><i class="fas fa-user-clock me-2 text-warning"></i>Data PPh 21 Tidak Final (21-100-03 Pegawai Tidak Tetap)</span>
-            
-            <!-- TOMBOL BARU DITAMBAHKAN DI SINI -->
-            <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-warning rounded-pill px-3" onclick="prosesHitungTidakTetap()">
-                    <i class="fas fa-calculator me-1"></i> Hitung Otomatis (21-100-03)
-                </button>
-                <button class="btn btn-sm btn-outline-warning rounded-pill px-3" onclick="loadDataTidakTetap()">
-                    <i class="fas fa-sync-alt me-1"></i> Tarik Data
-                </button>
+        <!-- VIEW 3: PPH 21 PEGAWAI TIDAK TETAP (21-100-03) -->
+        <div id="viewTidakTetap" style="display: none;">
+            <div class="card card-sb border-0" style="border-top: 5px solid #fdcb6e !important;">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <span><i class="fas fa-user-clock me-2 text-warning"></i>Data PPh 21 Tidak Final (21-100-03 Pegawai Tidak Tetap)</span>
+                    
+                    <div class="d-flex gap-2">
+                        <!-- TOMBOL HITUNG JUGA ADA DI SINI -->
+                        <button class="btn btn-sm btn-warning rounded-pill px-3" onclick="prosesHitungTidakTetap()">
+                            <i class="fas fa-calculator me-1"></i> Hitung Otomatis (21-100-03)
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning rounded-pill px-3" onclick="loadDataTidakTetap()">
+                            <i class="fas fa-sync-alt me-1"></i> Tarik Data
+                        </button>
+                    </div>
+                    
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-warning bg-warning-subtle border-0 rounded-4 mb-4">
+                        <i class="fas fa-magic me-2"></i> Klik <b>Hitung Otomatis</b> untuk membuat sheet dan mengkalkulasi PPh 21 Pegawai Tidak Tetap ke dalam database.
+                    </div>
+                    <div class="table-responsive">
+                        <table id="dataTableTidakTetap" class="table table-hover table-custom align-middle w-100">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>NPWP</th>
+                                    <th class="text-center">Kode Pajak</th>
+                                    <th class="text-end">Gaji Bruto</th>
+                                    <th class="text-end">PPh 21 (21-100-03)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelTidakTetap">
+                                <!-- Data disuntikkan ke sini -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            
         </div>
-        <div class="card-body p-4">
-            <div class="alert alert-warning bg-warning-subtle border-0 rounded-4 mb-4">
-                <i class="fas fa-magic me-2"></i> Klik <b>Hitung Otomatis</b> untuk membuat sheet dan mengkalkulasi PPh 21 Pegawai Tidak Tetap ke dalam database.
-            </div>
-            <div class="table-responsive">
-                <table id="dataTableTidakTetap" class="table table-hover table-custom align-middle w-100">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Lengkap</th>
-                            <th>NPWP</th>
-                            <th class="text-center">Kode Pajak</th>
-                            <th class="text-end">Gaji Bruto</th>
-                            <th class="text-end">PPh 21 (21-100-03)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelTidakTetap">
-                        <!-- Data disuntikkan ke sini -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
         <!-- VIEW 4: PPH 21 PESANGON TETAP -->
         <div id="viewPesangonTetap" style="display: none;">
@@ -364,11 +371,6 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
 
     </div>
 </div>
