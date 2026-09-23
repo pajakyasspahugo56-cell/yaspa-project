@@ -86,6 +86,8 @@
                     <i class="fas fa-chevron-down ms-auto" style="font-size: 0.8rem;"></i>
                 </a>
                 <div class="collapse submenu show" id="collapsePajak">
+                    
+                    <!-- Menu 1: Potongan Bulanan -->
                     <div class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#collapseBulanan" role="button">
                             Jenis Potongan Bulanan <i class="fas fa-chevron-down ms-auto" style="font-size: 0.7rem;"></i>
@@ -97,16 +99,24 @@
                         </div>
                     </div>
 
+                    <!-- Menu 2: Potongan Tidak Final (Baru) -->
+                    <div class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#collapseTidakFinal" role="button">
+                            Pemotongan Tidak Final <i class="fas fa-chevron-down ms-auto" style="font-size: 0.7rem;"></i>
+                        </a>
+                        <div class="collapse submenu show" id="collapseTidakFinal">
+                            <a class="nav-link" id="menu-tidak-tetap" onclick="switchView('viewTidakTetap', this)">
+                                <i class="fas fa-circle" style="font-size: 0.4rem; margin-right: 8px;"></i> Pegawai Tidak Tetap
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Menu 3: Pemotongan Final & Lainnya -->
                     <div class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#collapseFinal" role="button">
                             Pemotongan Final & Lainnya <i class="fas fa-chevron-down ms-auto" style="font-size: 0.7rem;"></i>
                         </a>
                         <div class="collapse submenu show" id="collapseFinal">
-                            <!-- Menu Lama -->
-                            <a class="nav-link" id="menu-pesangon" onclick="switchView('viewPesangon', this)">
-                                <i class="fas fa-circle" style="font-size: 0.4rem; margin-right: 8px;"></i> Uang Pesangon (Old)
-                            </a>
-                            <!-- Menu Baru ditambahkan -->
                             <a class="nav-link" id="menu-pesangon-tetap" onclick="switchView('viewPesangonTetap', this)">
                                 <i class="fas fa-circle" style="font-size: 0.4rem; margin-right: 8px;"></i> Pesangon Tetap
                             </a>
@@ -118,6 +128,7 @@
                             </a>
                         </div>
                     </div>
+
                 </div>
             </li>
         </ul>
@@ -188,7 +199,6 @@
                                 <table id="dataTablePegawai" class="table table-hover table-custom align-middle w-100">
                                     <thead>
                                         <tr>
-                                            <!-- DIPERBAIKI: Menghapus <th>Kode Pajak</th> agar total jadi 11 (sesuai data app.js) -->
                                             <th>No</th><th>Nama</th><th>Posisi</th><th>Status</th><th>TK/K</th><th>Gol</th><th>ID TKU</th><th>Unit</th><th>NPWP</th><th>Gaji Bruto</th><th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -209,9 +219,6 @@
                     <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="loadDataPPh21()"><i class="fas fa-sync-alt me-1"></i> Tarik Data Terbaru</button>
                 </div>
                 <div class="card-body p-4">
-                    <div class="alert alert-info border-0 rounded-4 mb-4">
-                        <i class="fas fa-info-circle me-2"></i> Data di bawah ini ditarik otomatis dari Sheet <b>PPh 21 (21-100-01 Pegawai Tetap)</b>. Untuk memperbarui perhitungan, gunakan tombol "Hitung TER" di menu Data Pegawai.
-                    </div>
                     <div class="table-responsive">
                         <table id="dataTablePPh21" class="table table-hover table-custom align-middle w-100">
                             <thead>
@@ -229,36 +236,30 @@
             </div>
         </div>
 
-        <!-- VIEW 3: PPH 21 FINAL PESANGON (OLD) -->
-        <div id="viewPesangon" style="display: none;">
-            <div class="card card-sb border-0" style="border-top: 5px solid #00b894 !important;">
+        <!-- VIEW BARU: PPH 21 PEGAWAI TIDAK TETAP (21-100-03) -->
+        <div id="viewTidakTetap" style="display: none;">
+            <div class="card card-sb border-0" style="border-top: 5px solid #fdcb6e !important;">
                 <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <span><i class="fas fa-hand-holding-usd me-2 text-success"></i>Data Potongan PPh 21 Final (21-401-01 Uang Pesangon)</span>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-success rounded-pill px-3" onclick="prosesHitungPesangon()">
-                            <i class="fas fa-calculator me-1"></i> Hitung Otomatis (21-401-01)
-                        </button>
-                        <button class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="loadDataPesangon()">
-                            <i class="fas fa-sync-alt me-1"></i> Tarik Data
-                        </button>
-                    </div>
+                    <span><i class="fas fa-user-clock me-2 text-warning"></i>Data PPh 21 Tidak Final (21-100-03 Pegawai Tidak Tetap)</span>
+                    <button class="btn btn-sm btn-outline-warning rounded-pill px-3" onclick="loadDataTidakTetap()"><i class="fas fa-sync-alt me-1"></i> Tarik Data</button>
                 </div>
                 <div class="card-body p-4">
-                    <div class="alert alert-success bg-success-subtle border-0 rounded-4 mb-4">
-                        <i class="fas fa-magic me-2"></i> Sistem akan memfilter Data Pegawai yang memiliki <b>Kode Pajak: 21-401-01</b>.
-                    </div>
                     <div class="table-responsive">
-                        <table id="dataTablePesangon" class="table table-hover table-custom align-middle w-100">
+                        <table id="dataTableTidakTetap" class="table table-hover table-custom align-middle w-100">
                             <thead>
                                 <tr>
-                                    <th width="5%" class="text-center">No</th>
-                                    <th width="35%">Nama Lengkap</th>
-                                    <th width="20%">NPWP</th>
-                                    <th width="20%" class="text-end">Penghasilan Bruto</th>
-                                    <th width="20%" class="text-end">PPh 21 Final</th>
+                                    <!-- Pastikan ada 6 kolom (Sesuai output Javascript) -->
+                                    <th>No</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>NPWP</th>
+                                    <th class="text-center">Kode Pajak</th>
+                                    <th class="text-end">Gaji Bruto</th>
+                                    <th class="text-end">PPh 21 (21-100-03)</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabelPesangon"></tbody>
+                            <tbody id="tabelTidakTetap">
+                                <!-- Data disuntikkan ke sini -->
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -277,7 +278,6 @@
                         <table id="dataTablePesangonTetap" class="table table-hover table-custom align-middle w-100">
                             <thead>
                                 <tr>
-                                    <!-- DIPERBAIKI: Kolom Gaji dan Kode Pajak ditukar agar sejajar dengan JS -->
                                     <th>No</th>
                                     <th>Nama Lengkap</th>
                                     <th>NPWP</th>
@@ -307,7 +307,6 @@
                         <table id="dataTablePNS" class="table table-hover table-custom align-middle w-100">
                             <thead>
                                 <tr>
-                                    <!-- DIPERBAIKI: Menghapus <th>Kategori</th> agar total jadi 6 kolom (Sesuai JS) -->
                                     <th>No</th>
                                     <th>Nama Lengkap</th>
                                     <th>NPWP</th>
@@ -337,7 +336,6 @@
                         <table id="dataTableKontrak" class="table table-hover table-custom align-middle w-100">
                             <thead>
                                 <tr>
-                                    <!-- DIPERBAIKI: Menghapus <th>Kode Pajak</th> karena di JS Kode Pajak & Status digabung dalam 1 kolom -->
                                     <th>No</th>
                                     <th>Nama Lengkap</th>
                                     <th>NPWP</th>

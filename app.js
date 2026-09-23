@@ -6,15 +6,19 @@ const loadingOverlay = document.getElementById('loadingOverlay');
 
 // Variabel State Data
 let currentDataPegawai = [];
+let currentDataPPh21 = [];
 let currentDataPesangonTetap = [];
 let currentDataPNS = [];
 let currentDataKontrak = [];
+let currentDataTidakTetap = []; // <--- Data Tidak Tetap
 
 // Variabel Instance DataTables
 let dtPegawaiInstance = null;
+let dtPPh21Instance = null;
 let dtTetapInstance = null;
 let dtPNSInstance = null;
 let dtKontrakInstance = null;
+let dtTidakTetapInstance = null; // <--- Tabel Tidak Tetap
 
 const formatRupiah = (angka) => {
     if (!angka || isNaN(angka)) return 'Rp 0';
@@ -26,8 +30,8 @@ const hideLoading = () => loadingOverlay.style.display = 'none';
 
 // --- NAVIGASI SIDEBAR (SPA ROUTING) ---
 function switchView(viewId, element) {
-    // Sembunyikan semua view
-    const views = ['viewDataPegawai', 'viewPesangonTetap', 'viewPNS', 'viewKontrak'];
+    // Sembunyikan semua view yang ada
+    const views = ['viewDataPegawai', 'viewPPh21', 'viewPesangonTetap', 'viewPNS', 'viewKontrak', 'viewTidakTetap'];
     views.forEach(v => {
         let el = document.getElementById(v);
         if(el) el.style.display = 'none';
@@ -44,131 +48,29 @@ function switchView(viewId, element) {
     if(viewId === 'viewDataPegawai') {
         document.getElementById('pageTitle').innerText = 'Modul Data Pegawai';
         loadData();
+    } else if (viewId === 'viewPPh21') {
+        document.getElementById('pageTitle').innerText = 'PPh 21 - Pegawai Tetap (21-100-01)';
+        loadDataPPh21();
     } else if (viewId === 'viewPesangonTetap') {
-        document.getElementById('pageTitle').innerText = 'PPh 21 Final - Uang Pesangon (Pegawai Tetap)';
+        document.getElementById('pageTitle').innerText = 'PPh 21 Final - Uang Pesangon (21-401-01)';
         loadDataKategori('get_pesangon_tetap', renderTablePesangonTetap);
     } else if (viewId === 'viewPNS') {
         document.getElementById('pageTitle').innerText = 'PPh 21 - Pegawai Negeri Sipil (PNS)';
         loadDataKategori('get_pns', renderTablePNS);
     } else if (viewId === 'viewKontrak') {
-        document.getElementById('pageTitle').innerText = 'PPh 21 (21-100-18) - Pegawai Kontrak/Honor';
+        document.getElementById('pageTitle').innerText = 'PPh 21 (21-100-18) - Honor / Belum Tetap';
         loadDataKategori('get_kontrak', renderTableKontrak);
+    } else if (viewId === 'viewTidakTetap') {
+        document.getElementById('pageTitle').innerText = 'PPh 21 Tidak Final (21-100-03) - Pegawai Tidak Tetap';
+        loadDataKategori('get_tidak_tetap', renderTableTidakTetap);
     }
 }
 
-// --- FUNGSI PENGAMBILAN DATA & RENDER BERDASARKAN KATEGORI ---
-async function loadDataKategori(actionName, renderFunction) {
-    showLoading();
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST', body: JSON.stringify({ action: actionName })
-        });
-        const result = await response.json();
-        if (result.status === "success") {
-            if (actionName === 'get_pesangon_tetap') { currentDataPesangonTetap = result.data; }
-            else if (actionName === 'get_pns') { currentDataPNS = result.data; }
-            else if (actionName === 'get_kontrak') { currentDataKontrak = result.data; }
-            renderFunction();
-        }
-    } catch (error) { console.error('Error:', error); } 
-    finally { hideLoading(); }
-}
+// ========================================================
+// FUNGSI PENGAMBILAN DATA (FETCHING API) & RENDER TABEL
+// ========================================================
 
-function renderTablePesangonTetap() {
-    if (dtTetapInstance) dtTetapInstance.destroy();
-    const tbody = document.getElementById('tabelPesangonTetap');
-    if (!tbody) return; tbody.innerHTML = '';
-
-    currentDataPesangonTetap.forEach((data) => {
-        tbody.innerHTML += `
-            <tr>
-                <td class="text-center">${data.no || ''}</td>
-                <td class="fw-semibold text-dark">${data.nama || ''}</td>
-                <td>${data.npwp || '-'}</td>
-                <td class="text-center"><span class="badge bg-primary">21-401-01</span></td>
-                <td class="text-end">${formatRupiah(data.gaji_bruto)}</td>
-                <td class="text-end fw-bold text-success">${formatRupiah(data.pph21)}</td>
-            </tr>`;
-    });
-    dtTetapInstance = $('#dataTablePesangonTetap').DataTable(getDtConfig());
-}
-
-function renderTablePNS() {
-    if (dtPNSInstance) dtPNSInstance.destroy();
-    const tbody = document.getElementById('tabelPNS');
-    if (!tbody) return; tbody.innerHTML = '';
-
-    currentDataPNS.forEach((data) => {
-        tbody.innerHTML += `
-            <tr>
-                <td class="text-center">${data.no || ''}</td>
-                <td class="fw-semibold text-dark">${data.nama || ''}</td>
-                <td>${data.npwp || '-'}</td>
-                <td class="text-center">Golongan ${data.info_ekstra || '-'}</td>
-                <td class="text-end">${formatRupiah(data.gaji_bruto)}</td>
-                <td class="text-end fw-bold text-info">${formatRupiah(data.pph21)}</td>
-            </tr>`;
-    });
-    dtPNSInstance = $('#dataTablePNS').DataTable(getDtConfig());
-}
-
-function renderTableKontrak() {
-    if (dtKontrakInstance) dtKontrakInstance.destroy();
-    const tbody = document.getElementById('tabelKontrak');
-    if (!tbody) return; tbody.innerHTML = '';
-
-    currentDataKontrak.forEach((data) => {
-        tbody.innerHTML += `
-            <tr>
-                <td class="text-center">${data.no || ''}</td>
-                <td class="fw-semibold text-dark">${data.nama || ''}</td>
-                <td>${data.npwp || '-'}</td>
-                <td class="text-center"><span class="badge bg-danger">${data.info_ekstra || ''}</span> <br><small>21-100-18</small></td>
-                <td class="text-end">${formatRupiah(data.gaji_bruto)}</td>
-                <td class="text-end fw-bold text-warning">${formatRupiah(data.pph21)}</td>
-            </tr>`;
-    });
-    dtKontrakInstance = $('#dataTableKontrak').DataTable(getDtConfig());
-}
-
-// --- FUNGSI MASTER KALKULASI PAJAK SEMUA KATEGORI ---
-async function prosesHitungPajakStatus() {
-    if (!confirm('Sistem akan menyaring seluruh pegawai secara otomatis dan menghitung pajak (Pesangon Tetap, PNS, & Kontrak) sesuai golongannya. Lanjutkan?')) return;
-    showLoading();
-    try {
-        const response = await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({ action: 'hitung_pajak_status' }) 
-        });
-        const result = await response.json();
-        if (result.status === "success") { 
-            alert(`Kalkulasi Berhasil!\n- Pegawai Tetap: ${result.data.tetap} orang\n- PNS: ${result.data.pns} orang\n- Honor/Kontrak: ${result.data.kontrak} orang`); 
-            // Reload table yang sedang aktif
-            const activeTitle = document.getElementById('pageTitle').innerText;
-            if(activeTitle.includes('Tetap')) loadDataKategori('get_pesangon_tetap', renderTablePesangonTetap);
-            else if(activeTitle.includes('PNS')) loadDataKategori('get_pns', renderTablePNS);
-            else if(activeTitle.includes('Kontrak')) loadDataKategori('get_kontrak', renderTableKontrak);
-        }
-    } catch (error) { console.error('Error:', error); } 
-    finally { hideLoading(); }
-}
-
-// --- KONFIGURASI UMUM DATATABLES ---
-function getDtConfig() {
-    return {
-        language: { search: "", searchPlaceholder: "Cari data...", lengthMenu: "Tampilkan _MENU_ baris", info: "Menampilkan _START_ s/d _END_ dari _TOTAL_ data" },
-        dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-3"Bf>rt<"d-flex flex-wrap justify-content-between align-items-center mt-3"ip>',
-        buttons: [
-            { extend: 'copy', className: 'btn btn-sm btn-outline-secondary', text: '<i class="fas fa-copy"></i> Copy' },
-            { extend: 'excel', className: 'btn btn-sm btn-outline-success', text: '<i class="fas fa-file-excel"></i> Excel' },
-            { extend: 'pdf', className: 'btn btn-sm btn-outline-danger', text: '<i class="fas fa-file-pdf"></i> PDF' },
-            { extend: 'print', className: 'btn btn-sm btn-outline-dark', text: '<i class="fas fa-print"></i> Print' }
-        ],
-        pageLength: 10, responsive: true, destroy: true
-    };
-}
-
-// --- FUNGSI MODUL: DATA PEGAWAI UTAMA ---
+// 1. DATA PEGAWAI UTAMA
 async function loadData() {
     showLoading();
     try {
@@ -185,6 +87,7 @@ function renderTablePegawai() {
 
     currentDataPegawai.forEach((pegawai) => {
         const rowData = JSON.stringify(pegawai).replace(/"/g, '&quot;');
+        // Harus ada tepat 11 <td> agar cocok dengan 11 <th> di HTML
         tbody.innerHTML += `
             <tr>
                 <td class="text-center">${pegawai.no || ''}</td>
@@ -204,6 +107,180 @@ function renderTablePegawai() {
             </tr>`;
     });
     dtPegawaiInstance = $('#dataTablePegawai').DataTable(getDtConfig());
+}
+
+// 2. KATEGORI (PESANGON, PNS, KONTRAK, TIDAK TETAP)
+async function loadDataKategori(actionName, renderFunction) {
+    showLoading();
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST', body: JSON.stringify({ action: actionName })
+        });
+        const result = await response.json();
+        if (result.status === "success") {
+            if (actionName === 'get_pesangon_tetap') { currentDataPesangonTetap = result.data; }
+            else if (actionName === 'get_pns') { currentDataPNS = result.data; }
+            else if (actionName === 'get_kontrak') { currentDataKontrak = result.data; }
+            else if (actionName === 'get_tidak_tetap') { currentDataTidakTetap = result.data; } // <--- Save data tidak tetap
+            renderFunction();
+        }
+    } catch (error) { console.error('Error:', error); } 
+    finally { hideLoading(); }
+}
+
+function renderTablePesangonTetap() {
+    if (dtTetapInstance) dtTetapInstance.destroy();
+    const tbody = document.getElementById('tabelPesangonTetap');
+    if (!tbody) return; tbody.innerHTML = '';
+    currentDataPesangonTetap.forEach((data) => {
+        // Harus ada tepat 6 <td> (No, Nama, NPWP, Kode Pajak, Bruto, PPh)
+        tbody.innerHTML += `
+            <tr>
+                <td class="text-center">${data.no || ''}</td>
+                <td class="fw-semibold text-dark">${data.nama || ''}</td>
+                <td>${data.npwp || '-'}</td>
+                <td class="text-center"><span class="badge bg-primary">${data.kode_pajak || '21-401-01'}</span></td>
+                <td class="text-end">${formatRupiah(data.gaji_bruto)}</td>
+                <td class="text-end fw-bold text-success">${formatRupiah(data.pph21)}</td>
+            </tr>`;
+    });
+    dtTetapInstance = $('#dataTablePesangonTetap').DataTable(getDtConfig());
+}
+
+function renderTablePNS() {
+    if (dtPNSInstance) dtPNSInstance.destroy();
+    const tbody = document.getElementById('tabelPNS');
+    if (!tbody) return; tbody.innerHTML = '';
+    currentDataPNS.forEach((data) => {
+        // Harus ada tepat 6 <td> (No, Nama, NPWP, Golongan, Gaji, PPh PNS)
+        tbody.innerHTML += `
+            <tr>
+                <td class="text-center">${data.no || ''}</td>
+                <td class="fw-semibold text-dark">${data.nama || ''}</td>
+                <td>${data.npwp || '-'}</td>
+                <td class="text-center"><span class="badge bg-info">Golongan ${data.info_ekstra || '-'}</span></td>
+                <td class="text-end">${formatRupiah(data.gaji_bruto)}</td>
+                <td class="text-end fw-bold text-info">${formatRupiah(data.pph21)}</td>
+            </tr>`;
+    });
+    dtPNSInstance = $('#dataTablePNS').DataTable(getDtConfig());
+}
+
+function renderTableKontrak() {
+    if (dtKontrakInstance) dtKontrakInstance.destroy();
+    const tbody = document.getElementById('tabelKontrak');
+    if (!tbody) return; tbody.innerHTML = '';
+    currentDataKontrak.forEach((data) => {
+        // Harus ada tepat 6 <td> (No, Nama, NPWP, Status & Kode, Gaji, PPh 21)
+        tbody.innerHTML += `
+            <tr>
+                <td class="text-center">${data.no || ''}</td>
+                <td class="fw-semibold text-dark">${data.nama || ''}</td>
+                <td>${data.npwp || '-'}</td>
+                <td class="text-center"><span class="badge bg-danger">${data.info_ekstra || ''}</span><br><small>21-100-18</small></td>
+                <td class="text-end">${formatRupiah(data.gaji_bruto)}</td>
+                <td class="text-end fw-bold text-danger">${formatRupiah(data.pph21)}</td>
+            </tr>`;
+    });
+    dtKontrakInstance = $('#dataTableKontrak').DataTable(getDtConfig());
+}
+
+// --- RENDER TABLE PEGAWAI TIDAK TETAP (BARU) ---
+function renderTableTidakTetap() {
+    if (dtTidakTetapInstance) dtTidakTetapInstance.destroy();
+    const tbody = document.getElementById('tabelTidakTetap');
+    if (!tbody) return; tbody.innerHTML = '';
+    currentDataTidakTetap.forEach((data) => {
+        // Harus ada tepat 6 <td> (No, Nama, NPWP, Kode Pajak, Gaji, PPh 21)
+        tbody.innerHTML += `
+            <tr>
+                <td class="text-center">${data.no || ''}</td>
+                <td class="fw-semibold text-dark">${data.nama || ''}</td>
+                <td>${data.npwp || '-'}</td>
+                <td class="text-center"><span class="badge bg-warning text-dark">${data.kode_pajak || '21-100-03'}</span></td>
+                <td class="text-end">${formatRupiah(data.gaji_bruto)}</td>
+                <td class="text-end fw-bold text-warning">${formatRupiah(data.pph21)}</td>
+            </tr>`;
+    });
+    dtTidakTetapInstance = $('#dataTableTidakTetap').DataTable(getDtConfig());
+}
+
+// 3. FUNGSI PERINTAH HITUNG PAJAK SEMUA STATUS KE API
+async function prosesHitungPajakStatus() {
+    if (!confirm('Sistem akan memproses dan memisahkan perhitungan pajak (Pesangon Tetap, PNS, Honor, & Tidak Tetap) sesuai golongannya. Lanjutkan?')) return;
+    showLoading();
+    try {
+        const response = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: 'hitung_pajak_status' }) 
+        });
+        const result = await response.json();
+        if (result.status === "success") { 
+            alert(`Kalkulasi Berhasil!\n- Pesangon Tetap: ${result.data.tetap} orang\n- PNS: ${result.data.pns} orang\n- Honor/Kontrak: ${result.data.kontrak} orang\n- Tidak Tetap: ${result.data.tidaktetap} orang`); 
+            
+            // Reload table yang sedang aktif (refresh otomatis)
+            const activeTitle = document.getElementById('pageTitle').innerText;
+            if(activeTitle.includes('Pesangon')) loadDataKategori('get_pesangon_tetap', renderTablePesangonTetap);
+            else if(activeTitle.includes('PNS')) loadDataKategori('get_pns', renderTablePNS);
+            else if(activeTitle.includes('Honor')) loadDataKategori('get_kontrak', renderTableKontrak);
+            else if(activeTitle.includes('Tidak Tetap')) loadDataKategori('get_tidak_tetap', renderTableTidakTetap);
+        }
+    } catch (error) { console.error('Error:', error); } 
+    finally { hideLoading(); }
+}
+
+// --- FUNGSI PAJAK PEGAWAI TETAP (TER PP 58) ---
+async function loadDataPPh21() {
+    showLoading();
+    try {
+        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_pph21_tetap' }) });
+        const result = await response.json();
+        if (result.status === "success") { currentDataPPh21 = result.data; renderTablePPh21(); }
+    } catch (error) { console.error('Error:', error); } finally { hideLoading(); }
+}
+
+function renderTablePPh21() {
+    if (dtPPh21Instance) dtPPh21Instance.destroy();
+    const tbody = document.getElementById('tabelPPh21');
+    tbody.innerHTML = '';
+    currentDataPPh21.forEach((data) => {
+        tbody.innerHTML += `
+            <tr>
+                <td class="text-center">${data.no || ''}</td>
+                <td class="fw-semibold text-dark">${data.nama || ''}</td>
+                <td class="text-end">${formatRupiah(data.gaji_bruto)}</td>
+                <td class="text-end fw-bold text-primary">${formatRupiah(data.pph21_bulanan)}</td>
+            </tr>`;
+    });
+    dtPPh21Instance = $('#dataTablePPh21').DataTable(getDtConfig());
+}
+
+async function prosesHitungPPh21() {
+    if (!confirm('Apakah Anda yakin ingin menghitung otomatis TER PPh 21 Pegawai Tetap?')) return;
+    showLoading();
+    try {
+        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'hitung_pph21_tetap' }) });
+        const result = await response.json();
+        if (result.status === "success") { alert('Perhitungan PPh 21 Berhasil Disimpan ke Sheet!'); }
+    } catch (error) { alert('Terjadi Kesalahan!'); } finally { hideLoading(); }
+}
+
+// ========================================================
+// CRUD PEGAWAI DAN KONFIGURASI UMUM
+// ========================================================
+
+function getDtConfig() {
+    return {
+        language: { search: "", searchPlaceholder: "Cari data...", lengthMenu: "Tampilkan _MENU_ baris", info: "Menampilkan _START_ s/d _END_ dari _TOTAL_ data" },
+        dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-3"Bf>rt<"d-flex flex-wrap justify-content-between align-items-center mt-3"ip>',
+        buttons: [
+            { extend: 'copy', className: 'btn btn-sm btn-outline-secondary', text: '<i class="fas fa-copy"></i> Copy' },
+            { extend: 'excel', className: 'btn btn-sm btn-outline-success', text: '<i class="fas fa-file-excel"></i> Excel' },
+            { extend: 'pdf', className: 'btn btn-sm btn-outline-danger', text: '<i class="fas fa-file-pdf"></i> PDF' },
+            { extend: 'print', className: 'btn btn-sm btn-outline-dark', text: '<i class="fas fa-print"></i> Print' }
+        ],
+        pageLength: 10, responsive: true, destroy: true
+    };
 }
 
 form.addEventListener('submit', async function(e) {
@@ -245,5 +322,10 @@ async function hapusData(row) {
 
 function resetForm() { form.reset(); document.getElementById('rowId').value = ''; document.getElementById('noUrut').value = ''; }
 
-// Initialize
+// Pemanggilan Data Utama (Triggers Data Pegawai)
+function loadDataPesangonTetap() { loadDataKategori('get_pesangon_tetap', renderTablePesangonTetap); }
+function loadDataPNS() { loadDataKategori('get_pns', renderTablePNS); }
+function loadDataKontrak() { loadDataKategori('get_kontrak', renderTableKontrak); }
+function loadDataTidakTetap() { loadDataKategori('get_tidak_tetap', renderTableTidakTetap); } // Trigger Baru
+
 document.addEventListener("DOMContentLoaded", loadData);
